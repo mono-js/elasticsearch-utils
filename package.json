@@ -1,0 +1,55 @@
+{
+  "name": "elasticsearch-utils",
+  "version": "0.0.1",
+  "description": "Utils for elasticsearch for nodejs",
+  "main": "lib/",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "lint": "eslint 'lib/*.js'",
+    "test": "npm run lint && nyc ava --verbose --serial test/ && nyc report --reporter=html",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "preversion": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/terrajs/elasticsearch-utils.git"
+  },
+  "nyc": {
+    "include": [
+      "lib/"
+    ]
+  },
+  "contributors": [
+    {
+      "name": "Sebastien Chopin (@Atinux)"
+    },
+    {
+      "name": "Benjamin Canac (@benjamincanac)"
+    },
+    {
+      "name": "Gaetan SENN (@gaetansenn)"
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.4"
+  },
+  "peerDependencies": {
+    "elasticsearch": "^13.3.1"
+  },
+  "devDependencies": {
+    "@terrajs/mono": "^0.4.11",
+    "mono-elasticsearch": "^2.1.0",
+    "mono-test-utils": "^1.1.0",
+    "ava": "^0.22.0",
+    "codecov": "^2.3.1",
+    "elasticsearch": "^13.3.1",
+    "eslint": "^4.9.0",
+    "nyc": "^11.2.1",
+    "rimraf": "^2.6.2",
+    "std-mocks": "^1.0.1"
+  },
+  "keywords": []
+}
