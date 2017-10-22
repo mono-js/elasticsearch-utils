@@ -1,6 +1,6 @@
-# elasticsearch-utils
+<h1 align="left"><img src="https://user-images.githubusercontent.com/904724/31862989-9d0c7b16-b747-11e7-814d-9b6f5141ad52.png" width="300" alt="ElasticSearch Utils"/></h1>
 
-elasticsearch utils library for node
+> ElasticSearch utils for Node.js
 
 [![npm version](https://img.shields.io/npm/v/elasticsearch-utils.svg)](https://www.npmjs.com/package/elasticsearch-utils)
 [![Travis](https://img.shields.io/travis/terrajs/elasticsearch-utils/master.svg)](https://travis-ci.org/terrajs/elasticsearch-utils)
