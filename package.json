@@ -40,13 +40,13 @@
     "elasticsearch": "^13.3.1"
   },
   "devDependencies": {
-    "@terrajs/mono": "^0.4.11",
-    "mono-elasticsearch": "^2.1.0",
-    "mono-test-utils": "^1.1.0",
+    "@terrajs/mono": "^0.6.0",
     "ava": "^0.22.0",
     "codecov": "^2.3.1",
     "elasticsearch": "^13.3.1",
     "eslint": "^4.9.0",
+    "mono-elasticsearch": "^2.1.3",
+    "mono-test-utils": "^1.2.1",
     "nyc": "^11.2.1",
     "rimraf": "^2.6.2",
     "std-mocks": "^1.0.1"

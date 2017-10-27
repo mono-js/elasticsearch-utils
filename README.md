@@ -17,102 +17,247 @@ npm install --save elasticsearch-utils
 
 elasticsearch utils overide the `collection` class by adding an `utils` object that will expose all the elasticsearch utils methods:
 
+Here an example without mono-elasticsearch
 ```js
-const mongoUtils = require('elasticsearch-utils')
+const elasticSearchUtils = require('elasticsearch-utils')
+const { Client } = require('elasticsearch')
 
-const collection = mongoUtils(db.collection('users'))
+const client = await new Client(elasticsearchConfiguration)
+const elasticSearchUtilsInstance = elasticSearchUtils(client, { log: loggerFunction })
 
-// We can now access to elasticsearch-utils method from .utils
-const user = await collection.utils.get({ usermane: 'terrajs' })
+// We can now access to elasticsearch-utils methods from .utils
+const result = await elasticSearchUtilsInstance.utils.createIndex('elasticsearch-utils-index')
+```
+
+Here an example using [mono-elasticsearch](https://github.com/terrajs/mono-elasticsearch)
+```js
+const elasticSearchUtils = require('elasticsearch-utils')
+const { client } = require('mono-elasticsearch')
+const elasticSearchUtilsInstance = elasticSearchUtils(client, { log: loggerFunction })
+
+//We can now access to elasticsearch-utils methods from .utils
+const result = await elasticSearchUtilsInstance.utils.createIndex('elasticsearch-utils-index)
 ```
 
 ## Methods
 
-### get
+### createIndex
 
 ```js
-get(query = { key: value } || string || ObjectID, [fields]): Promise<doc>
+createIndex(index, [settings, mappings]): Promise<void>
 ```
 
-Return a document that match the specific identifier (`_id` by default) or the query:
+Create an elasticsearch index if not exist, with a specific settings and mappings
 
 ```js
-// Get the document that match the query { _id: ObjectID('59c0de2dfe8fa448605b1d89') }
-collection.utils.get('59c0de2dfe8fa448605b1d89')
+// Create the index `elasticsearch-utils-index` }
+elasticSearchUtilsInstance.utils.createIndex('elasticsearch-utils-index')
 
-// Get the document that match the query { username: 'terrajs' }
-collection.utils.get({ username: 'terrajs' })
-
-// Get the document that match the query & return only its _id
-collection.utils.get({ username: 'terrajs' }, { _id: 1 })
-// Get the document that match the query & return only its _id (works with array too)
-collection.utils.get({ username: 'terrajs' }, ['_id'])
-```
-
-### create
-
-```js
-create(doc): Promise<doc>
-```
-
-Insert a document into the collection and add `createdAt` and `updatedAt` properties:
-
-```js
-// Add a document into the collection and return the created document
-const user = await collection.utils.create({ username: 'terrajs' })
-```
-
-### update
-
-```js
-update(query = { key: value } || string || ObjectID, doc): Promise<doc>
-```
-
-Update a specific document and update the `updatedAt` value
-
-```js
-// Update the document that match the query { _id: ObjectID('59c0de2dfe8fa448605b1d89') } and update its username
-await collection.utils.update('59c0de2dfe8fa448605b1d89', { username: 'terrajs2' })
-
-// Update the document that match the query { username: 'terrajs2' } and update its username
-await collection.utils.update({ username: 'terrajs2' }, { username: 'terrajs' })
-```
-
-### remove
-
-```js
-remove(query = { key: value } || string || ObjectID): Promise<boolean>
-```
-
-Remove a document that match the specific identifier (`_id` by default) or the query:
-
-```js
-// Remove the document that match the query { _id: ObjectID('59c0de2dfe8fa448605b1d89') }
-const result = collection.utils.remove('59c0de2dfe8fa448605b1d89')
-
-// Remove the document that match the query { username: 'test' }
-collection.utils.remove({ username: 'test' })
-```
-
-### find
-
-```js
-find(query = { key: value } || string || ObjectID, [options = { fields: ..., limit: ..., offset: ..., sort: ... }]): Promise<cursor>
-```
-The find method return a mongo cursor from a specific query and options.
-
-Options:
-  - `fields`: Array of keys (`['username', ...]`) to return **OR** a elasticsearch projection (`{ field1: 1, ... }`), default: `{}`
-  - `limit`: Nb of docs to return, no limit by default
-  - `offset`: Nb of docs to skpi, default: `0`
-  - `sort`: Sort criteria (same as `sort` method from mongo cursor), default: `{}`
-
-```js
-// We find document that match the query { username: new RegExp(/^test/g) }, options with { username: 1, createdAt: 1 } projection and limit at 1 element
-const request = await userCollection.mono.find({
-  username: new RegExp(/^test/g)
+// Create the index `elasticsearch-utils-index` with the specific settings and mappings
+elasticSearchUtilsInstance.utils.createIndex('elasticsearch-utils-index', {
+  "number_of_shards": "5"
 }, {
-  fields: ['username', 'createdAt'],
-  limit: 1
+  "type1": {
+			"properties": {
+				"field1": { "type": "keyword" }
+			},
+		}
 })
 ```
+
+### createIndice
+
+```js
+createIndice(indice = string, settings = object, mappings = object): Promise<void>
+```
+
+Create two indexes and one alias that pointing to one of it (default `${indice}_1`)
+The generated indexes are `${indice}_1` and `${indice}_2`
+
+```js
+// Create an indice of the name `elasticsearch-utils`
+await elasticSearchUtilsInstance.utils.createIndice('elasticsearch-utils)
+
+// Create an indice with the name `elasticsearch-utils` and with settings and mappings
+await elasticSearchUtilsInstance.utils.createIndice('elasticsearch-utils, {
+  "number_of_shards": "5"
+}, {
+  "type1": {
+			"properties": {
+				"field1": { "type": "keyword" }
+			},
+		}
+})
+```
+
+### reindexIndice
+
+```js
+reindexIndice(indice: string): Promise<void>
+```
+
+Reindex the unusedIndex from the usedIndex using the reindex function of elasticsearch
+
+```js
+// Update unusedIndex of the indice `elasticsearch-utils`
+await elasticSearchUtilsInstance.utils.reindexIndice('elasticsearch-utils')
+```
+
+### swapIndice
+
+```js
+swapIndice(indice: string): Promise<void>
+```
+
+Moving the alias to point to the unused index
+
+```js
+// Moving the indice `elasticsearch-utils` from the used index to the unused index
+// Ex: Pointing to `elasticsearch-utils_1` to `elasticsearch-utils_2`
+await elasticSearchUtilsInstance.utils.swapIndice('elasticsearch-utils')
+```
+
+### clearIndice
+
+```js
+clearIndice(index: string, settings = object, mappings = object): Promise<void>
+```
+
+Clear the unused index of a specific indice with the specific settings and mappings
+
+```js
+// Clear the indice `elasticsearch-utils`
+// Ex: if current unused index is `elasticsearch-utils_2` then cleaning it.
+await elasticSearchUtilsInstance.utils.clearIndice('elasticsearch-utils', {
+  "number_of_shards": "4"
+}, {
+  "type1": {
+			"properties": {
+				"field1": { "type": "keyword" }
+			},
+		}
+})
+```
+
+### clearIndex
+
+```js
+clearIndex(index: string, settings = object, mappings = object): Promise<void>
+```
+
+Clear a specific index with the specific settings and mappings
+
+```js
+// Clear the specified index `elasticsearch-utils`
+elasticSearchUtilsInstance.utils.clearIndex('elasticsearch-utils', {
+  "number_of_shards": "4"
+}, {
+  "type1": {
+			"properties": {
+				"field1": { "type": "keyword" }
+			},
+		}
+})
+```
+
+### refreshIndex
+
+```js
+refreshIndex(index: string): Promise<void>
+```
+
+Refresh a specific index. Call the refresh function of elastic search
+
+```js
+//Refresh the `elasticsearch-index` index
+elasticSearchUtilsInstance.utils.refreshIndex('elasticsearch-utils')
+```
+
+### generateTermFilter
+
+```js
+generateTermFilter(field = string, value = string || object): object
+```
+
+Generate a term filter to be use with elasticsearch search method
+
+```js
+// Generate field1 term with value field-1 -> { term: { field1: 'field-1' }}
+generateTermFilter('field1', 'field-1')
+// Generate field1 terms with value ['field-1', 'field-2']
+generateTermFilter('field1', ['field-1', 'field-2'])
+```
+
+### generateExistsFilter
+
+```js
+generateExistsFilter(field = object): object
+```
+
+Generate exists filter to be use with elasticsearch search method
+
+```js
+// Generate field1 exists with value field-1 -> { exists: { field1: 'field-1' }}
+generateExistsFilter({ field1: 'field-1' })
+```
+
+### generateRangeFilter
+
+```js
+generateRangeFilter(field = string, value = string || Array): object
+```
+
+Generate range bool should filter to be use with elasticsearch search method
+
+```js
+// Generate range for age with 2 to 12 and 4 to 25
+generateRangeFilter('age', ['2-12', '4-25'])
+```
+
+### search
+
+```js
+search(query = object => { index: string, type: string, options = { limit: ..., offset: ... }, body: object })
+```
+
+The search method return an elasticsearch search result from a specific index, type, body and options.
+
+Options:
+  - `limit`: Nb of hits to return, no limit by default
+  - `offset`: Nb of hits to skpi, default: `0`
+
+```js
+// We search for a document that match the index `elasticsearch-utils` type `type1` with projection and limit at 1 element
+const result = await elasticSearchUtilsInstance.utils.search('elasticsearch-utils', 'type1', {
+  limit: 1,
+  offset: 0
+})
+```
+
+### getUsedIndex
+
+```js
+getUsedIndex(indice: string): Promise<string>
+```
+
+Return the used index for a specific indice
+
+```js
+// Return the used index of `elasticsearch-utils` indice
+const usedIndex = await elasticSearchUtilsInstance.utils.getUsedIndex('elasticsearch-utils')
+```
+
+### getUnusedIndex
+
+```js
+getUnusedIndex(indice: string): Promise<string>
+```
+
+Return the unused index for a specific indice
+
+```js
+// Return the unused index of `elasticsearch-utils` indice
+const unusedIndex = await elasticSearchUtilsInstance.utils.getUnusedIndex('elasticsearch-utils')
+```
+
+
