@@ -36,7 +36,7 @@ const { client } = require('mono-elasticsearch')
 const elasticSearchUtilsInstance = elasticSearchUtils(client, { log: loggerFunction })
 
 //We can now access to elasticsearch-utils methods from .utils
-const result = await elasticSearchUtilsInstance.utils.createIndex('elasticsearch-utils-index)
+const result = await elasticSearchUtilsInstance.utils.createIndex('elasticsearch-utils-index')
 ```
 
 ## Methods
@@ -57,11 +57,11 @@ elasticSearchUtilsInstance.utils.createIndex('elasticsearch-utils-index')
 elasticSearchUtilsInstance.utils.createIndex('elasticsearch-utils-index', {
   "number_of_shards": "5"
 }, {
-  "type1": {
-			"properties": {
-				"field1": { "type": "keyword" }
-			},
-		}
+ "type1": {
+  "properties": {
+   "field1": { "type": "keyword" }
+   },
+ }
 })
 ```
 
@@ -76,17 +76,17 @@ The generated indexes are `${indice}_1` and `${indice}_2`
 
 ```js
 // Create an indice of the name `elasticsearch-utils`
-await elasticSearchUtilsInstance.utils.createIndice('elasticsearch-utils)
+await elasticSearchUtilsInstance.utils.createIndice('elasticsearch-utils')
 
 // Create an indice with the name `elasticsearch-utils` and with settings and mappings
-await elasticSearchUtilsInstance.utils.createIndice('elasticsearch-utils, {
-  "number_of_shards": "5"
+await elasticSearchUtilsInstance.utils.createIndice('elasticsearch-utils', {
+  "number_of_shards": "6"
 }, {
-  "type1": {
-			"properties": {
-				"field1": { "type": "keyword" }
-			},
-		}
+ "type1": {
+  "properties": {
+   "field1": { "type": "keyword" }
+   },
+ }
 })
 ```
 
@@ -131,11 +131,11 @@ Clear the unused index of a specific indice with the specific settings and mappi
 await elasticSearchUtilsInstance.utils.clearIndice('elasticsearch-utils', {
   "number_of_shards": "4"
 }, {
-  "type1": {
-			"properties": {
-				"field1": { "type": "keyword" }
-			},
-		}
+ "type1": {
+  "properties": {
+   "field1": { "type": "keyword" }
+  },
+ }
 })
 ```
 
@@ -152,11 +152,11 @@ Clear a specific index with the specific settings and mappings
 elasticSearchUtilsInstance.utils.clearIndex('elasticsearch-utils', {
   "number_of_shards": "4"
 }, {
-  "type1": {
-			"properties": {
-				"field1": { "type": "keyword" }
-			},
-		}
+ "type1": {
+  "properties": {
+   "field1": { "type": "keyword" }
+  },
+ }
 })
 ```
 
