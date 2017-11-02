@@ -33,12 +33,6 @@ let documentTest2 = {
 }
 const index = 'product'
 
-function omit(obj, fields) {
-	return Object.keys(obj)
-		.filter((key) => fields.indexOf(key) < 0)
-		.reduce((newObj, key) => Object.assign(newObj, { [key]: obj[key] }), {})
-}
-
 test('Should fail if no client is passed to the constructor', async (t) => {
 	ctx = await start(join(__dirname, '/fixtures/ok/'))
 
@@ -46,7 +40,7 @@ test('Should fail if no client is passed to the constructor', async (t) => {
 
 	t.is(error.message, 'no-elasticsearch-client-provided')
 
-	stop(ctx.server)
+	await stop(ctx.server)
 })
 
 async function deleteIndex(index) {
@@ -57,6 +51,8 @@ async function deleteIndex(index) {
 }
 
 test('Starting mono and check elasticsearchUtils instance', async (t) => {
+	ctx = await start(join(__dirname, '/fixtures/ok/'))
+
 	elasticSearchUtilsInstance = elasticsearchUtils(elasticsearchModule.client, { log: ctx.log.info })
 	await deleteIndex(`${index}_1`)
 	await deleteIndex(`${index}_2`)
@@ -76,7 +72,7 @@ test("elasticsearch-utils.createIndex create an index with passed settings and m
 
 	t.deepEqual(indexResult[indexTest.index].mappings, indexTest.mappings)
 	t.deepEqual(indexResult[indexTest.index].settings.index.number_of_shards, indexTest.settings.number_of_shards)
-	t.true(stdout.join().includes(`[elasticsearch-utils] Creating ${indexTest.index} index`))
+	t.true(stdout.join().includes(`[@terrajs/elasticsearch-utils] Creating ${indexTest.index} index`))
 })
 
 test("elasticsearch-utils clear index should restore the default settings and mappings", async (t) => {
@@ -91,7 +87,7 @@ test("elasticsearch-utils clear index should restore the default settings and ma
 
 	t.deepEqual(indexResult[indexTest.index].settings.index.number_of_shards, indexTest.settings.number_of_shards)
 	t.deepEqual(indexResult[indexTest.index].mappings, indexTest.mappings)
-	t.true(stdout.join().includes(`[elasticsearch-utils] Clearing ${indexTest.index} index`))
+	t.true(stdout.join().includes(`[@terrajs/elasticsearch-utils] Clearing ${indexTest.index} index`))
 })
 
 test("elasticsearch-utils.createIndex should not create an existing index", async (t) => {
@@ -246,10 +242,10 @@ test(`elasticsearch-utils getUnusedIndex should return an error if not alias exi
 	const { stdout } = stdRestore()
 
 	t.is(error.message, `unable-to-find-alias-for-${index}`)
-	t.true(stdout.join().includes(`[elasticsearch-utils] Alias ${index}_1,${index}_2 for ${index} not exists`))
+	t.true(stdout.join().includes(`[@terrajs/elasticsearch-utils] Alias ${index}_1,${index}_2 for ${index} not exists`))
 })
 
-test.after('We close mono server', () => {
-	stop(ctx.server)
+test.after('We close mono server', async () => {
+	await stop(ctx.server)
 })
 
