@@ -234,9 +234,24 @@ test('elasticsearch-utils search should apply the body', async (t) => {
 	t.deepEqual(search.hits.hits[0]._source, documentTest2)
 })
 
-test(`elasticsearch-utils getUnusedIndex should return an error if not alias exist`, async (t) => {
-	await deleteIndex(index)
+test("elasticsearch-utils.deleteIndice should delete the indice", async (t) => {
+	stdMock()
+	await elasticSearchUtilsInstance.utils.deleteIndice(index)
+	const { stdout } = stdRestore()
 
+	t.true(stdout.join().includes(`[@terrajs/elasticsearch-utils] Delete ${index} alias pointing to ${index}_1 and ${index}_2`))
+})
+
+test("elasticsearch-utils.deleteIndice should return an error if indice not exist", async (t) => {
+	stdMock()
+	const error = await t.throws(elasticSearchUtilsInstance.utils.deleteIndice(index))
+	const { stdout } = stdRestore()
+
+	t.is(error.message, `unable-to-find-indice-for-${index}`)
+	t.true(stdout.join().includes(`[@terrajs/elasticsearch-utils] Alias ${index}_1,${index}_2 for ${index} not exists`))
+})
+
+test(`elasticsearch-utils getUnusedIndex should return an error if not alias exist`, async (t) => {
 	stdMock()
 	const error = await t.throws(elasticSearchUtilsInstance.utils.getUnusedIndex(index))
 	const { stdout } = stdRestore()

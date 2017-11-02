@@ -90,6 +90,20 @@ await elasticSearchUtilsInstance.utils.createIndice('elasticsearch-utils', {
 })
 ```
 
+### deleteIndice
+
+```js
+deleteIndice(indice = string): Promise<void>
+```
+
+Delete a specific indice created by the function createIndice
+The method will delete the indexes : `${indice}_1` and `${indice}_2`
+
+```js
+// Delete the `elasticsearch-utils` indice
+await elasticSearchUtilsInstance.utils.deleteIndice('elasticsearch-utils')
+```
+
 ### reindexIndice
 
 ```js
