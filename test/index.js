@@ -15,13 +15,13 @@ let unusedIndex
 let indexTest = {
 	index: 'index-test',
 	settings: {
-		"number_of_shards": "5"
+		number_of_shards: '5'
 	},
 	mappings: {
-		"type1": {
-			"properties": {
-				"field1": { "type": "keyword" }
-			},
+		type1: {
+			properties: {
+				field1: { type: 'keyword' }
+			}
 		}
 	}
 }
