@@ -47,7 +47,7 @@
     "eslint": "4.11.0",
     "mono-elasticsearch": "2.1.3",
     "mono-test-utils": "1.2.3",
-    "nyc": "11.3.0",
+    "nyc": "11.6.0",
     "rimraf": "2.6.2",
     "std-mocks": "1.0.1"
   },
