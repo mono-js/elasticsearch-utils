@@ -2,7 +2,7 @@
 
 > ElasticSearch utils for Node.js
 
-[![npm version](https://img.shields.io/npm/v/elasticsearch-utils.svg)](https://www.npmjs.com/package/elasticsearch-utils)
+[![npm version](https://img.shields.io/npm/v/elasticsearch-utils.svg)](https://www.npmjs.com/package/@terrajs/elasticsearch-utils)
 [![Travis](https://img.shields.io/travis/terrajs/elasticsearch-utils/master.svg)](https://travis-ci.org/terrajs/elasticsearch-utils)
 [![Coverage](https://img.shields.io/codecov/c/github/terrajs/elasticsearch-utils/master.svg)](https://codecov.io/gh/terrajs/elasticsearch-utils.js)
 [![license](https://img.shields.io/github/license/terrajs/elasticsearch-utils.svg)](https://github.com/terrajs/elasticsearch-utils/blob/master/LICENSE)
